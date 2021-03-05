@@ -61,6 +61,30 @@ impl PossibleEntries {
             }
         }
     }
+    fn update_field(&mut self, s: &Sudoku) {
+        for x in 0..9 {
+            for y in 0..9 {
+                self.update_line(s.field[x][y], x, y);
+                self.update_block(s.field[x][y], x, y);
+            }
+        }
+    }
+    fn get_unique_value(&self, x: usize, y: usize) -> u8 {
+        let mut count = 0;
+        for i in 0..9 {
+            if self.field[x][y][i] {
+                count += 1;
+            }
+        }
+        if count == 1 {
+            for i in 0..9 {
+                if self.field[x][y][i] {
+                    return (i + 1) as u8;
+                }
+            }
+        }
+        return 0;
+    }
 }
 
 fn unpack_index(index: u8) -> (usize, usize) {
@@ -150,12 +174,7 @@ impl Sudoku {
     fn solve(&mut self, ordering: fn() -> Vec<usize>) -> bool {
         let mut p = PossibleEntries::default();
         // update all blocks and lines (basic conditions)
-        for x in 0..9 {
-            for y in 0..9 {
-                p.update_line(self.field[x][y], x, y);
-                p.update_block(self.field[x][y], x, y);
-            }
-        }
+        p.update_field(self);
         return self._solve(&p, ordering, 0);
     }
     fn solve_randomized(&mut self) -> bool {
@@ -164,6 +183,138 @@ impl Sudoku {
     fn solve_ordered(&mut self) -> bool {
         self.solve(|| (0..9).collect())
     }
+}
+
+struct SudokuHumanLikeSolver {
+    p: PossibleEntries,
+    s: Sudoku,
+}
+
+impl SudokuHumanLikeSolver {
+    pub fn SudokuHumanLikeSolver(s: Sudoku) -> Self {
+        let mut p = PossibleEntries::default();
+        for x in 0..9 {
+            for y in 0..9 {
+                if s.field[x][y] != 0 {
+                    for i in 0..9 {
+                        if i == s.field[x][y] + 1 {
+                            p.field[x][y][i] = true;
+                        } else {
+                            p.field[x][y][i] = false;
+                        }
+                    }
+                }
+            }
+        }
+        SudokuHumanLikeSolver {
+            p,
+            s,
+        }
+    }
+    /*
+    Apply standard Sudoku rules.
+    If there is only a single candidate left for a cell, take it.
+     */
+    pub fn sole_candidate(&mut self) -> i32 {
+        self.p.update_field(&self.s);
+        let mut result = 0;
+        for x in 0..9 {
+            for y in 0..9 {
+                let v = self.p.get_unique_value(x, y);
+                if v != self.s.field[x][y] {
+                    result += 1;
+                    self.s.field[x][y] = v;
+                }
+            }
+        }
+        result
+    }
+    /*
+    For every line/block, check if a specific number is only
+    available in one cell.
+    That cell might have other candidates, but we know we can
+    take it.
+     */
+    pub fn unique_candidate(&mut self) -> i32 {
+        let mut result = 0;
+        // TODO
+        result
+    }
+    /*
+    If a number in a block is restricted to only one line,
+    this number cannot be anywhere else on that line.
+     */
+    pub fn line_block_interaction(&mut self) -> i32 {
+        let mut result = 0;
+        // TODO
+        result
+    }
+    /*
+    This is kind of the opposite of the line-block interaction:
+    If a number is ruled out in two blocks on the same line,
+    it has to be in the third block on that line.
+     */
+    pub fn block_block_interaction(&mut self) -> i32 {
+        let mut result = 0;
+        // TODO
+        result
+    }
+    /*
+    Naked Subset: If we have n (e.g. 2) cells with only the
+    same n candidates in one line/block, those number cannot
+    be anywhere else in this line/block.
+    TODO: maybe get a sorted list (by number of candidates)
+      of cells and compare neighbors?
+     */
+    pub fn naked_subset(&mut self) -> i32 {
+        let mut result = 0;
+        // TODO
+        result
+    }
+    /*
+    Hidden Subset: Similar to naked subset.
+    If only n cells contain the same subset of n numbers,
+    (while possibly containing others as well)
+    those n numbers can only be placed into these n cells,
+    ruling out the other numbers contained in those cells.
+    TODO: maybe use a histogram (how many cells for each number)
+      for that?
+    TODO: does NOT subsume naked subset
+    TODO: subsumes unique_candidate
+     */
+    pub fn hidden_subset(&mut self) -> i32 {
+        let mut result = 0;
+        // TODO
+        result
+    }
+    /*
+    X-Wing: 4 cells in a rectangle spanning at least 2 blocks
+    can only contain two values, in alternating fashion.
+    TODO: how do I keep this from exploding in complexity?
+     */
+    pub fn x_wing(&mut self) -> i32 {
+        let mut result = 0;
+        // TODO
+        result
+    }
+    /*
+    Swordfish: This one is incredibly complicated.
+    If you can connect cells with common candidate numbers
+    alternating between vertical and horizontal movements,
+    and you can close the cycle without repetition,
+    only every other cell can contain the same number.
+    This clearly subsumes x_wing.
+    TODO: not sure if feasible.
+     */
+    /*
+    Forcing Chain: If you have some cells,
+    containing only two candidates and
+    connected by a line/block in a chain,
+    you can make a guess and follow that chain using both variants.
+    If parts of the chain get locked on the same number,
+    no matter your initial decision, you can keep them on that number.
+    TODO: no way this is feasible
+    */
 }
 
 #[test]
@@ -187,7 +338,7 @@ fn test_update_block() {
 
 
 fn main() {
-    //println!("Hello, world!");
+//println!("Hello, world!");
     let mut s = Sudoku::default();
     s.solve_randomized();
     println!("{}", s);
