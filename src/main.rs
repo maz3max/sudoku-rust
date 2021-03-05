@@ -12,21 +12,21 @@ pub struct Sudoku {
     field: [[u8; 9]; 9],
 }
 
-impl std::fmt::Display for Sudoku{
+impl std::fmt::Display for Sudoku {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        for x in 0..9{
-            if x % 3 == 0{
-                writeln!(f,"-------------------------")?;
+        for x in 0..9 {
+            if x % 3 == 0 {
+                writeln!(f, "-------------------------")?;
             }
-            for y in 0..9{
-                if y%3 == 0{
-                    write!(f,"| ")?;
+            for y in 0..9 {
+                if y % 3 == 0 {
+                    write!(f, "| ")?;
                 }
-                write!(f,"{} ",self.field[x][y])?;
+                write!(f, "{} ", self.field[x][y])?;
             }
-            writeln!(f,"|")?;
+            writeln!(f, "|")?;
         }
-        writeln!(f,"-------------------------")?;
+        writeln!(f, "-------------------------")?;
         Ok(())
     }
 }
