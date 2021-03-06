@@ -102,31 +102,6 @@ fn test_unpack_index() {
     assert_eq!(unpack_index(80), (8, 8));
 }
 
-fn get_block(x: u8, y: u8) -> u8 {
-    x / 3 + y - (y % 3)
-}
-
-#[test]
-fn test_get_block() {
-    assert_eq!(get_block(0, 0), 0);
-    assert_eq!(get_block(1, 0), 0);
-    assert_eq!(get_block(2, 0), 0);
-    assert_eq!(get_block(0, 1), 0);
-    assert_eq!(get_block(1, 1), 0);
-    assert_eq!(get_block(2, 1), 0);
-    assert_eq!(get_block(0, 2), 0);
-    assert_eq!(get_block(1, 2), 0);
-    assert_eq!(get_block(2, 2), 0);
-    assert_eq!(get_block(3, 0), 1);
-    assert_eq!(get_block(6, 0), 2);
-    assert_eq!(get_block(0, 3), 3);
-    assert_eq!(get_block(3, 3), 4);
-    assert_eq!(get_block(6, 3), 5);
-    assert_eq!(get_block(0, 6), 6);
-    assert_eq!(get_block(3, 6), 7);
-    assert_eq!(get_block(6, 6), 8);
-}
-
 impl Sudoku {
     pub fn full() -> Self {
         let result = Sudoku::default();
