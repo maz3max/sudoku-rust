@@ -43,6 +43,13 @@ impl Default for PossibleEntries {
 }
 
 impl PossibleEntries {
+    fn pin_cell(&mut self, val: u8, x: usize, y: usize) {
+        if val != 0 {
+            self.field[x][y] = [false; 9];
+            self.field[x][y][val as usize] = true;
+        }
+    }
+
     fn update_line(&mut self, val: u8, x: usize, y: usize) {
         if val != 0 {
             let i = (val - 1) as usize;
@@ -166,19 +173,11 @@ struct SudokuHumanLikeSolver {
 }
 
 impl SudokuHumanLikeSolver {
-    pub fn SudokuHumanLikeSolver(s: Sudoku) -> Self {
+    pub fn from_sudoku(s: Sudoku) -> Self {
         let mut p = PossibleEntries::default();
         for x in 0..9 {
             for y in 0..9 {
-                if s.field[x][y] != 0 {
-                    for i in 0..9 {
-                        if i == s.field[x][y] + 1 {
-                            p.field[x][y][i] = true;
-                        } else {
-                            p.field[x][y][i] = false;
-                        }
-                    }
-                }
+                p.pin_cell(s.field[x][y], x, y);
             }
         }
         SudokuHumanLikeSolver {
