@@ -22,7 +22,12 @@ impl std::fmt::Display for Sudoku {
                 if y % 3 == 0 {
                     write!(f, "| ")?;
                 }
-                write!(f, "{} ", self.field[x][y])?;
+                let val = self.field[x][y];
+                if val == 0 {
+                    write!(f, "  ")?;
+                } else {
+                    write!(f, "{} ", val)?;
+                }
             }
             writeln!(f, "|")?;
         }
