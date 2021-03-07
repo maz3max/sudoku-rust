@@ -100,7 +100,7 @@ impl PossibleEntries {
     }
 }
 
-fn unpack_index(index: u8) -> (usize, usize) {
+fn unpack_index(index: usize) -> (usize, usize) {
     ((index % 9) as usize, (index / 9) as usize)
 }
 
@@ -122,7 +122,7 @@ impl Sudoku {
         result
     }
 
-    fn _solve(&mut self, p: &PossibleEntries, ordering: fn() -> Vec<usize>, index: u8) -> bool {
+    fn _solve(&mut self, p: &PossibleEntries, ordering: fn() -> Vec<usize>, index: usize) -> bool {
         if index == 81 /* end condition: out of bounds */ {
             true
         } else {
