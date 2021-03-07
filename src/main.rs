@@ -49,9 +49,10 @@ impl Default for PossibleEntries {
 
 impl PossibleEntries {
     fn pin_cell(&mut self, val: u8, x: usize, y: usize) {
+        assert!(val < 10);
         if val != 0 {
             self.field[x][y] = [false; 9];
-            self.field[x][y][val as usize] = true;
+            self.field[x][y][(val - 1) as usize] = true;
         }
     }
 
