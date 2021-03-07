@@ -117,8 +117,37 @@ fn test_unpack_index() {
 
 impl Sudoku {
     pub fn full() -> Self {
-        let result = Sudoku::default();
+        let mut result = Sudoku::default();
+        result.solve_randomized();
+        // erase cells in random order and check if still solvable
+        let order = shuffled(9 * 9);
+        let mut num_erased = 0;
+        for c in order {
+            let (x, y) = unpack_index(c);
+            let original_num = result.field[x][y];
 
+            // erase cell and try if still solvable
+            num_erased += 1;
+            result.field[x][y] = 0;
+            let mut solver = SudokuHumanLikeSolver::from_sudoku(result);
+            let mut num_found = 0;
+            loop {
+                let mut new_cells_found = solver.sole_candidate();
+                new_cells_found += solver.unique_candidate();
+                if new_cells_found == 0 {
+                    break;
+                } else {
+                    num_found += new_cells_found;
+                }
+            }
+            // rewind if not solvable anymore
+            if num_found != num_erased {
+                // println!("found: {}, but erased: {}", num_found, num_erased);
+                num_erased -= 1;
+                result.field[x][y] = original_num;
+            }
+        }
+        println!("{} hints", 81 - num_erased);
         result
     }
 
@@ -367,7 +396,6 @@ fn test_update_block() {
 
 fn main() {
 //println!("Hello, world!");
-    let mut s = Sudoku::default();
-    s.solve_randomized();
+    let mut s = Sudoku::full();
     println!("{}", s);
 }
