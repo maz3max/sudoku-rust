@@ -249,19 +249,19 @@ impl SudokuHumanLikeSolver {
 
             for i in 0..9 {
                 if pos_y[i] < 9 && self.s.field[a][pos_y[i]] == 0 { // there is a unique candidate for this number
-                    self.p.pin_cell(i as u8, a, pos_y[i]);
+                    self.p.pin_cell((i + 1) as u8, a, pos_y[i]);
                     result += 1;
-                    self.s.field[a][pos_y[i]] = i as u8;
+                    self.s.field[a][pos_y[i]] = (i + 1) as u8;
                 }
                 if pos_x[i] < 9 && self.s.field[pos_x[i]][a] == 0 {
-                    self.p.pin_cell(i as u8, pos_x[i], a);
+                    self.p.pin_cell((i + 1) as u8, pos_x[i], a);
                     result += 1;
-                    self.s.field[pos_x[i]][a] = i as u8;
+                    self.s.field[pos_x[i]][a] = (i + 1) as u8;
                 }
                 if pos_block[i].0 < 9 && self.s.field[pos_block[i].0][pos_block[i].1] == 0 {
-                    self.p.pin_cell(i as u8, pos_block[i].0, pos_block[i].1);
+                    self.p.pin_cell((i + 1) as u8, pos_block[i].0, pos_block[i].1);
                     result += 1;
-                    self.s.field[pos_block[i].0][pos_block[i].1] = i as u8;
+                    self.s.field[pos_block[i].0][pos_block[i].1] = (i + 1) as u8;
                 }
             }
         }
