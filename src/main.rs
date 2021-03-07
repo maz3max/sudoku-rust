@@ -201,7 +201,7 @@ impl SudokuHumanLikeSolver {
         for x in 0..9 {
             for y in 0..9 {
                 let v = self.p.get_unique_value(x, y);
-                if v != self.s.field[x][y] {
+                if v != 0 && v != self.s.field[x][y] {
                     result += 1;
                     self.s.field[x][y] = v;
                 }
